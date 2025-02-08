@@ -1,7 +1,7 @@
-# IFMS Dev Competition
+# PROJECT_NAME
 
 <p align="center">
-  <em>RESTful API for managing the IFMS Development Competition</em>
+  <em>PROJECT_DESCRIPTION</em>
 </p>
 <p align="center">
   <a href="https://github.com/mauprogramador/ifms-dev-competition/releases/latest" target="_blank" rel="external" title="Latest Release">
@@ -23,36 +23,13 @@
 
 ---
 
-Federal Institute of Mato Grosso do Sul - <a href="https://www.ifms.edu.br/campi/campus-tres-lagoas" target="_blank" rel="external" title="IFMS - Campus Três Lagoas">IFMS - Campus Três Lagoas</a><br/>
-Technology in Systems Analysis and Development - <a href="https://www.ifms.edu.br/campi/campus-tres-lagoas/cursos/graduacao/analise-e-desenvolvimento-de-sistemas" target="_blank" rel="external" title="TADS">TADS</a><br/>
-
-**RESTful API**: <a href="http://127.0.0.1:8000/v1/ifms-dev-competition/api" target="_blank" rel="external" title="Web API">http://127.0.0.1:8000/v1/ifms-dev-competition/api</a>
-
-**Swagger UI**: <a href="http://127.0.0.1:8000/docs" target="_blank" rel="external" title="Swagger UI">http://127.0.0.1:8000/</a>
+**PROJECT_URL**: <a href="http://127.0.0.1:8000/" target="_blank" rel="external" title="Swagger UI">http://127.0.0.1:8000/</a>
 
 ---
 
 ## Overview
 
-This **RESTful API** was developed to support the exchange of **HTML** and **CSS** files between teams in the **IFMS** programming competition.
-
-### Dynamics
-
-**First:** the pairs of each team will program independently and alternately, with each member in a language (**HTML** or **CSS**) one at a time.
-
-**Last:** the final, one finalist pair per team, the same project for all teams, the order and the way of programming will be decided by the game.
-
-### Teams Count
-
-By default, **30** code directories will be generated for **First** Dynamic, and **10** code directories for **Last** Dynamic.
-
-### Files
-
-Each generated code directory will have two files: a **`HTML`** file type called **index.html** and a **`CSS`** file type called **`style.css`**.
-
-### Rate Limit
-
-This application has a request rate limiting mechanism for **API tagged routes**, accepting up to **60 requests every 2 seconds**. Requests beyond this limit will be responded with an **HTTP 429 error**.
+PROJECT_OVERVIEW
 
 ---
 
