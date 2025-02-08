@@ -1,0 +1,28 @@
+#!/bin/bash
+
+
+if git diff --cached --name-only | grep -q '^app/'; then
+  make lint
+
+  if [[ $? -ne 0 ]]; then
+    exit 1
+  fi
+fi
+
+if git diff --cached --name-only | grep -q '^tests/'; then
+  make lint-tests
+
+  if [[ $? -ne 0 ]]; then
+    exit 1
+  fi
+fi
+
+if git diff --cached --name-only | grep -q '^requirements/'; then
+  make audit
+
+  if [[ $? -ne 0 ]]; then
+    exit 1
+  fi
+fi
+
+make test
