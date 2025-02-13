@@ -29,7 +29,7 @@ Example:
 handleHelp "$1"
 
 # e.g. 0.1.12, 0.2.106-alpha
-TAG_REGEX_PATTERN="[0-9]+\.[0-9]+\.[0-9]+(?:[\-\w-]+)?"
+TAG_REGEX_PATTERN="[0-9]+\.[0-9]+\.[0-9]+[\-\w-]*"
 
 # Check passed tag
 if [[ -n "$1" ]] && [[ ! "$1" =~ $TAG_REGEX_PATTERN ]]; then
@@ -53,8 +53,8 @@ fi
 if [ -z "$1" ]; then
   echo -ne "New Tag (Format: \033[37;1mx.x.x\033[m or \033[37;1mx.x.x-x\033[m): \033[92;1mv"
   read new_tag
-  echo -e "" >&2
 
+  echo $new_tag
   if [[ ! "$new_tag" =~ $TAG_REGEX_PATTERN ]]; then
     logError "Invalid tag format"
     echoHelp
@@ -89,8 +89,5 @@ if [[ -n "$origin_url" ]]; then
 else
   logError "Failed to get \033[93mOrigin\033[91m URL"
 fi
-
-# Release
-echo -e "Create a release note. Run \033[93mrelease -h\033[m" >&2
 
 exit 0
