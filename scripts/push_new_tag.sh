@@ -54,7 +54,6 @@ if [ -z "$1" ]; then
   echo -ne "New Tag (Format: \033[37;1mx.x.x\033[m or \033[37;1mx.x.x-x\033[m): \033[92;1mv"
   read new_tag
 
-  echo $new_tag
   if [[ ! "$new_tag" =~ $TAG_REGEX_PATTERN ]]; then
     logError "Invalid tag format"
     echoHelp
