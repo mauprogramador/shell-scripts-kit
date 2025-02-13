@@ -1,125 +1,116 @@
 #!/bin/bash
 
-trap "echo -e '\033[35;1m!\033[m \033[91mGot an interruption ✘\033[m' ; exit 1" SIGINT
+if ! source "$(dirname "$0")/../utils/functions.sh" &>/dev/null; then
+  echo -e "\033[35;1m!\033[m \033[91mFailed import ✘\033[m" >&2
+  exit 1
+fi
+
+signalHandler
+checkForGitRepo
 
 # Help
-readonly HELP="
+readonly HELP_MANUAL="
 Usage: release [OPTION]
 
-Generates Git release notes from the previous tag or changes to the current or latest tag, with the latest updates sorted by conventional commits.
+Generates the Git release notes from the previous tag or changes to the current or latest tag, with the latest updates sorted by conventional commits.
 
-Options for the temporary file and its contents
+It uses the Cat command by default if no option is provided.
 
-  gedit          Open with Gedit editor https://gedit-text-editor.org/
-  cat            Read with Cat command https://www.gnu.org/software/coreutils/cat
-  nano           Open with Nano editor https://www.nano-editor.org
-  xclip          Copy with XClip command https://github.com/astrand/xclip
+Options for the temporary file and its contents:
 
-  -h, --help     Display this help and exit
+  gedit          Open with Gedit editor. https://gedit-text-editor.org/
+  cat            Read with Cat command. https://www.gnu.org/software/coreutils/cat
+  vim            Open with Vim editor. https://www.vim.org/
+  nano           Open with Nano editor. https://www.nano-editor.org
+  xclip          Copy with XClip command. https://github.com/astrand/xclip
+  -h, --help     Display this help and exit.
+
+Example:
+  $ release xclip (Copy to clipboard)
 "
 
-if [[ "$1" == "--help" ]]; then
-  echo "$HELP" >&2
-  exit 0
-fi
+handleHelp "$1"
 
-while getopts ":h" opt; do
-  case $opt in
-    h)
-      echo "$HELP" >&2
-      exit 0
-      ;;
-    \?)
-      echo -e "\033[35;1m!\033[m \033[91mInvalid option -$OPTARG ✘\033[m" >&2
-      exit 1
-      ;;
-  esac
-done
-
-# Check the allowed command option
-ALLOWED_COMMANDS=("gedit" "cat" "nano" "xclip")
-DEFAULT_COMMAND="cat"
-
+# Check if allowed command option
 if [ -z "$1" ]; then
-  chosen_command="$DEFAULT_COMMAND"
+  chosen_command="cat"
 else
-  valid_command=false
-  for cmd in "${ALLOWED_COMMANDS[@]}"; do
-    if [[ "$1" == "$cmd" ]]; then
-      valid_command=true
-      chosen_command="$1"
-      break
-    fi
-  done
-
-  if ! $valid_command; then
-    echo -e "\033[35;1m!\033[m \033[91mInvalid command-option ✘\033[m" >&2
-    exit 1
+  if echo "$1" | grep -Eq '^(cat|gedit|vim|nano|xclip)$'; then
+    chosen_command="$1"
+  else
+    invalidOption
   fi
 fi
 
-if ! command -v "$chosen_command" &> /dev/null; then
-  echo -e "\033[35;1m!\033[m \033[91mCommand-option '$1' not found ✘\033[m" >&2
-  exit 1
+if ! command -v "$chosen_command" &>/dev/null; then
+  exitError "Command-option \033[33m$1\033[91m not found"
 fi
 
-# Build release
+# Create temp file
 OUTPUT_FILE=$(mktemp) || {
-  echo -e "\033[35;1m!\033[m \033[91mError in creating temp file ✘\033[m" >&2
-  exit 1
+  exitError "Error in creating temp file"
 }
 
+# Get remote/origin
 origin_url=$(git remote get-url origin 2>/dev/null)
 
-if [[ ! -z "$origin_url" ]]; then
+if [[ -n "$origin_url" ]]; then
   origin_url="$(echo "$origin_url" | sed "s/\.git$//")"
 else
-  echo -e "\033[35;1m!\033[m \033[91mFailed to get remote (\033[37;1mOrigin\033[m) URL ✘\033[m" >&2
-  exit 1
+  exitError "Failed to get \033[93mOrigin\033[91m URL"
 fi
 
-COMMIT_LINK="$origin_url/commit"
-RELEASES="$origin_url/releases/tag"
-CHANGELOG="$origin_url/tree/master/CHANGELOG.md"
-COMPARE_LINK="$origin_url/compare"
-
-extract_prefix_and_message() {
-  local commit_subject="$1"
-
-  if [[ "$commit_subject" =~ ^([^:]+):[[:space:]]*(.*)$ ]]; then
-    prefix="${BASH_REMATCH[1]}"
-    message="${BASH_REMATCH[2]}"
-    echo "$prefix:$message"
-  else
-    echo "other:$commit_subject"
-  fi
-}
-
-append_commits_by_group() {
-  local commits_list="$1"
-  local prefix="$2"
-
-  if [[ -n "$commits_list" ]]; then
-    echo -e "\n## $prefix" >> $OUTPUT_FILE
-    echo "$commits_list" >> $OUTPUT_FILE
-  fi
-}
-
+# Get latest tag
 latest_tag=$(git for-each-ref --count=1 --sort=-taggerdate --format '%(refname:short) %(taggerdate:short)' refs/tags)
 if [[ -z "$latest_tag" ]]; then
-  echo -e "\033[35;1m!\033[m \033[91mFailed to get the latest tag ✘\033[m" >&2
-  exit 1
+  exitError "Failed to get the latest Tag"
 fi
 
 tag=$(echo "$latest_tag" | awk '{print $1}')
 date=$(echo "$latest_tag" | awk '{print $2}')
 
-echo -e "# 🔖 Release [\`$tag\`]($RELEASES/$tag) ($date)" >> $OUTPUT_FILE
+# Add h1 title
+echo -e "# 🔖 Release [\`$tag\`]($origin_url/releases/tag/$tag) ($date)" >>$OUTPUT_FILE
 
-if [ -f "CHANGELOG.md" ]; then
-  echo -e "\nSee the [⟲ CHANGELOG]($CHANGELOG) to see all the commits." >> $OUTPUT_FILE
+# Check for CHANGELOG
+CHANGELOG_FILES=("CHANGELOG.md" "changelog.md" "CHANGELOG" "changelog")
+
+for file in "${CHANGELOG_FILES[@]}"; do
+  if [ -f "$file" ]; then
+    echo -e "\n> See the [⟲ CHANGELOG]($origin_url/tree/master/$file) to see all the commits." >>$OUTPUT_FILE
+    break
+  fi
+done
+
+# Get previous tag, comparison and commits
+previous_tag=$(git describe --tags --abbrev=0 "$tag"^ 2>/dev/null)
+
+if [ -z "$previous_tag" ]; then
+  released_commits=$(git log "$tag" --pretty=format:"%h %H %s")
+
+  # Get first commit date
+  first_commit_date=$(git log --reverse -n 1 --pretty=format:"%B %d, %Y")
+
+  if [[ -z "$first_commit_date" ]]; then
+    logError "First commit date not found"
+  else
+    echo -e "\n> In development since $first_commit_date." >>$OUTPUT_FILE
+  fi
+else
+  released_commits=$(git log "$previous_tag".."$tag" --pretty=format:"%h %H %s")
+
+  compare_url="$origin_url/compare/$previous_tag...$tag"
+  echo -e "\n> See the [comparison ⟲ history]($compare_url) with the previous tag." >>$OUTPUT_FILE
 fi
 
+if [[ -z "$released_commits" ]]; then
+  exitError "Failed to get released commits"
+fi
+
+# Define human-readable notes for main changes
+echo -e "\n## 🔥 Main Changes\n\n-" >>$OUTPUT_FILE
+
+# Build releases
 feat_commits=""
 fix_commits=""
 chore_commits=""
@@ -130,80 +121,75 @@ test_commits=""
 docs_commits=""
 other_commits=""
 
-previous_tag=$(git describe --tags --abbrev=0 "$tag"^ 2>/dev/null)
-
-if [ -z "$previous_tag" ]; then
-  released_commits=$(git log "$tag" --pretty=format:"%s")
-else
-  released_commits=$(git log "$previous_tag".."$tag" --pretty=format:"%s")
-  echo -e "\nSee the [comparison ⟲ history]($COMPARE_LINK/$previous_tag...$tag) with the previous tag." >> $OUTPUT_FILE
-fi
-
-if [[ -z "$released_commits" ]]; then
-  echo -e "\033[35;1m!\033[m \033[91mFailed to get released commits ✘\033[m" >&2
-  exit 1
-fi
-
-echo -e "\n## 🔥 Main Changes\n\n-" >> $OUTPUT_FILE
-
-while read -r subject; do
+while read -r short_hash commit_hash subject; do
   formatted_subject=$(extract_prefix_and_message "$subject")
   prefix="${formatted_subject%%:*}"
   message="${formatted_subject#*:}"
 
   message="$(echo "${message:0:1}" | tr '[:lower:]' '[:upper:]')${message:1}"
-  text=$(echo -e "\n- $message.")
+  text=$(echo -e "\n- $message. [#$short_hash]($origin_url/commit/$commit_hash)")
 
   case $prefix in
-    "feat") feat_commits+="$text";;
-    "fix") fix_commits+="$text";;
-    "chore") chore_commits+="$text";;
-    "build") build_commits+="$text";;
-    "style") style_commits+="$text";;
-    "refactor") refactor_commits+="$text";;
-    "test") test_commits+="$text";;
-    "docs") docs_commits+="$text";;
-    *) other_commits+="$text";;
+  "feat") feat_commits+="$text" ;;
+  "fix") fix_commits+="$text" ;;
+  "chore") chore_commits+="$text" ;;
+  "build") build_commits+="$text" ;;
+  "style") style_commits+="$text" ;;
+  "refactor") refactor_commits+="$text" ;;
+  "test") test_commits+="$text" ;;
+  "docs") docs_commits+="$text" ;;
+  *) other_commits+="$text" ;;
   esac
-done <<< "$released_commits"
+done <<<"$released_commits"
 
-append_commits_by_group "$build_commits" "🔨 Builds"
-append_commits_by_group "$feat_commits" "✨ Features"
-append_commits_by_group "$fix_commits" "🔧 Fixes"
-append_commits_by_group "$refactor_commits" "♻️ Refactors"
-append_commits_by_group "$test_commits" "🧪 Tests"
-append_commits_by_group "$chore_commits" "📝 Chores"
-append_commits_by_group "$docs_commits" "📄 Docs"
-append_commits_by_group "$style_commits" "🎨 Styles"
-append_commits_by_group "$other_commits" "📌 Others"
+TITLE_LEVEL="##"
+append_commits_by_group "🔨 Builds" "$build_commits"
+append_commits_by_group "✨ Features" "$feat_commits"
+append_commits_by_group "🔧 Fixes" "$fix_commits"
+append_commits_by_group "♻️ Refactors" "$refactor_commits"
+append_commits_by_group "🧪 Tests" "$test_commits"
+append_commits_by_group "📝 Chores" "$chore_commits"
+append_commits_by_group "📄 Docs" "$docs_commits"
+append_commits_by_group "🎨 Styles" "$style_commits"
+append_commits_by_group "📌 Others" "$other_commits"
 
 # Output
-echo -e "\033[93mRelease.md \033[92mgenerated ✔\033[m" >&2
+logSuccess "Release Notes" "generated"
 
+# Execute command
 case $chosen_command in
-  "cat")
-    cat "$OUTPUT_FILE"
-    echo -e "\033[33mCopy the content (Ctrl + Shift + C)\033[m" >&2
-    ;;
-  "gedit")
-    echo -e "\033[33mCopy the content (Ctrl + A & Ctrl + C)\033[m" >&2
-    gedit $OUTPUT_FILE
-    ;;
-  "nano")
-    echo -e "\033[33mCopy the content (Ctrl + C)\033[m" >&2;
-    nano $OUTPUT_FILE
-    ;;
-  "xclip")
-    echo -e "\033[33mPaste the content (Ctrl + V)\033[m" >&2
-    cat "$OUTPUT_FILE" | xclip -selection clipboard
-    ;;
-  *)
-    echo -e "\033[35;1m!\033[m \033[91mInvalid command-option ✘\033[m" >&2
-    rm $OUTPUT_FILE
-    exit 1
-    ;;
+"cat")
+  cat "$OUTPUT_FILE"
+  echo -e "\033[33mCopy the content (Ctrl + Shift + C)\033[m" >&2
+  ;;
+"gedit")
+  echo -e "\033[33mCopy the content (Ctrl + A & Ctrl + C)\033[m" >&2
+  gedit $OUTPUT_FILE
+  ;;
+"vim")
+  echo -e "\033[33mCopy the content\033[m" >&2
+  vim $OUTPUT_FILE
+  ;;
+"nano")
+  echo -e "\033[33mCopy the content (Ctrl + C)\033[m" >&2
+  nano $OUTPUT_FILE
+  ;;
+"xclip")
+  echo -e "\033[33mPaste the content (Ctrl + V)\033[m" >&2
+  cat "$OUTPUT_FILE" | xclip -selection clipboard
+  ;;
+*)
+  logError "Invalid command-option"
+  rm $OUTPUT_FILE
+  exit 1
+  ;;
 esac
 
+# Delete temp file
 rm $OUTPUT_FILE
+
+# Show release url
+echo -e "Go to \033[37;1mOrigin\033[m and create the release notes" >&2
+echo -e "$origin_url/releases/tag/$tag" >&2
 
 exit 0
