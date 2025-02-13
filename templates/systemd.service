@@ -1,0 +1,28 @@
+[Unit]
+Description=$service_description
+After=network.target
+# For Docker:
+# After=docker.service
+# Requires=docker.service
+
+[Service]
+Type=simple
+User=magic-lab-server-01
+WorkingDirectory=$PROJECTS_FOLDER/$service_name
+ExecStart=$PROJECTS_FOLDER/$repository_name/.venv/bin/uvicorn 'app:app'
+ExecStop=...
+# For Docker:
+# ExecStartPre=/usr/bin/docker pull image:tag
+# ExecStart=/usr/bin/docker run ...
+# ExecStop=/usr/bin/docker stop container_name
+# For Docker Compose:
+# ExecStart=/bin/bash -c 'cd $PROJECTS_FOLDER/$repository_name && docker compose up'
+# ExecStop=/bin/bash -c 'cd $PROJECTS_FOLDER/$repository_name && docker compose down'
+Environment=VARIABLE=value
+EnvironmentFile=$PROJECTS_FOLDER/$repository_name/.env
+Restart=always
+StandardOutput=file:$SERVICES_FOLDER/$service_name/records.log
+StandardError=file:$SERVICES_FOLDER/$service_name/errors.log
+
+[Install]
+WantedBy=multi-user.target
