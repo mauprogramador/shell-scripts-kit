@@ -64,12 +64,13 @@ fi
 echo "# 📜 Changelog ($(date "+%Y-%m-%d"))" >>$OUTPUT_FILE
 
 # Get first commit date
-first_commit_date=$(git log --reverse -n 1 --pretty=format:"%B %d, %Y")
+first_commit=$(git log --reverse --all --pretty=format:"%cs" | head -n 1)
 
-if [[ -z "$first_commit_date" ]]; then
+if [[ -z "$first_commit" ]]; then
   logError "First commit date not found"
 else
-  echo -e "\n> In development since $first_commit_date." >>$OUTPUT_FILE
+  first_commit_date=$(LC_ALL=en_US date -d $first_commit "+%B %d, %Y")
+  echo -e "\n> In development since: $first_commit_date." >>$OUTPUT_FILE
 fi
 
 # Get all Git tags
