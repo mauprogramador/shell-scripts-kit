@@ -19,25 +19,31 @@ It prompts for a tag interactively by default if no tag argument is provided.
 
 Option and argument:
 
-  tag            New Git tag to be pushed. Format: x.x.x or x.x.x-x.
+  tag            New Git tag to be pushed. Format: vx.x.x or vx.x.x-x.
   -h, --help     Display this help and exit.
 
 Example:
-  $ ptag 0.1.4-alpha (Create and push)
+  $ ptag v0.1.4 (Create and push)
 "
 
 handleHelp "$1"
 
 # e.g. 0.1.12, 0.2.106-alpha
-TAG_REGEX_PATTERN="[0-9]+\.[0-9]+\.[0-9]+[\-\w-]*"
+TAG_REGEX_PATTERN="v[0-9]+\.[0-9]+\.[0-9]+[\-\w-]*"
 
 # Check passed tag
-if [[ -n "$1" ]] && [[ ! "$1" =~ $TAG_REGEX_PATTERN ]]; then
-  logError "Invalid tag format"
-  echoHelp
-  exit 1
-else
-  new_tag="$1"
+new_tag=""
+
+if [[ -n "$1" ]]; then
+  if [[ ! "$1" =~ $TAG_REGEX_PATTERN ]]; then
+    logError "Invalid tag format"
+    echoHelp
+    exit 1
+  elif git show-ref --verify "refs/tags/$1" &>/dev/null; then
+    exitError "Git tag $1 already exists"
+  else
+    new_tag="$1"
+  fi
 fi
 
 # Check for last tag
@@ -51,32 +57,34 @@ fi
 
 # New tag
 if [ -z "$1" ]; then
-  echo -ne "New Tag (Format: \033[37;1mx.x.x\033[m or \033[37;1mx.x.x-x\033[m): \033[92;1mv"
+  echo -ne "New Tag (Format: \033[37;1mvx.x.x\033[m or \033[37;1mvx.x.x-x\033[m): \033[92;1m"
   read new_tag
 
   if [[ ! "$new_tag" =~ $TAG_REGEX_PATTERN ]]; then
     logError "Invalid tag format"
     echoHelp
     exit 1
+  elif git show-ref --verify "refs/tags/$new_tag" &>/dev/null; then
+    exitError "Git tag $new_tag already exists"
   fi
 else
-  echo -e "\033[mNew Tag: \033[92;1mv$new_tag\033[m" >&2
+  echo -e "\033[mNew Tag: \033[92;1m$new_tag\033[m" >&2
 fi
 
 # Create Tag
-git tag v$new_tag -m "🔖 Release version $new_tag" 2>/dev/null
+git tag "$new_tag" -m "🔖 Release version ${new_tag:1}" 2>/dev/null
 if [ $? -ne 0 ]; then
   exitError "Failed to create Tag"
 fi
 
 # Push Tag
-git push origin v$new_tag 2>/dev/null
+git push origin "$new_tag" 2>/dev/null
 if [ $? -ne 0 ]; then
   exitError "Failed to Push to Origin"
 fi
 
 # Output
-logSuccess "Git Tag v$new_tag" "pushed"
+logSuccess "Git Tag $new_tag" "pushed"
 echo -e "Go and check it out at \033[37;1mOrigin\033[m" >&2
 
 # Get origin
@@ -84,7 +92,7 @@ origin_url=$(git remote get-url origin 2>/dev/null)
 
 if [[ -n "$origin_url" ]]; then
   origin_url="$(echo "$origin_url" | sed "s/\.git$//")"
-  echo -e "$origin_url/releases/tag/v$new_tag" >&2
+  echo -e "$origin_url/releases/tag/$new_tag" >&2
 else
   logError "Failed to get \033[93mOrigin\033[91m URL"
 fi
