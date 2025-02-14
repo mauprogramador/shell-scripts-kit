@@ -40,7 +40,7 @@ if [[ -n "$1" ]]; then
     echoHelp
     exit 1
   elif ! git show-ref --verify "refs/tags/$1" &>/dev/null; then
-    exitError "Git Tag not found in repository"
+    exitError "Git Tag not found"
   else
     tag="$1"
     logSuccess "Git Tag $1" "selected"
@@ -82,13 +82,13 @@ if [[ -z "$tag" ]]; then
 fi
 
 # Delete Tag
-git tag -d "$tag" 2>/dev/null
+git tag -d "$tag" &>/dev/null
 if [ $? -ne 0 ]; then
   exitError "Failed to delete Tag"
 fi
 
 # Delete remote Tag
-git push origin --delete "$tag" 2>/dev/null
+git push origin --delete "$tag" &>/dev/null
 if [ $? -ne 0 ]; then
   exitError "Failed to delete remote Tag"
 fi
