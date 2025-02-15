@@ -35,9 +35,9 @@ Docs:
 handleHelp "$1"
 
 # Set file names
-ZSH_HISTORY=".zsh_aliases"
-LOCAL_ZSH_HISTORY="config/.zsh_aliases"
-HOME_ZSH_HISTORY="$HOME/.zsh_aliases"
+ZSH_ALIASES=".zsh_aliases"
+LOCAL_ZSH_ALIASES="config/.zsh_aliases"
+HOME_ZSH_ALIASES="$HOME/.zsh_aliases"
 
 # Check if allowed command option
 if [ -z "$1" ]; then
@@ -57,22 +57,22 @@ fi
 # Execute command
 case $chosen_command in
 "update")
-  echo -e "KIT_PATH=$(pwd)\n" >$HOME_ZSH_HISTORY
-  cat "$LOCAL_ZSH_HISTORY" >>$HOME_ZSH_HISTORY
-  source $HOME_ZSH_HISTORY
-  logSuccess "ZSH history" "updated"
+  echo -e "KIT_PATH=$(pwd)\n" >$HOME_ZSH_ALIASES
+  cat "$LOCAL_ZSH_ALIASES" >>$HOME_ZSH_ALIASES
+  logSuccess "ZSH aliases" "updated"
+  echo -e "Run \033[93msource ~/.zsh_aliase\033[m to load aliases"
   ;;
 "gedit")
   echo -e "\033[33mEdit and save (Ctrl + S)\033[m" >&2
-  gedit $LOCAL_ZSH_HISTORY
+  gedit $LOCAL_ZSH_ALIASES
   ;;
 "vim")
   echo -e "\033[33mEdit and save\033[m" >&2
-  vim $LOCAL_ZSH_HISTORY
+  vim $LOCAL_ZSH_ALIASES
   ;;
 "nano")
   echo -e "\033[33mEdit and save\033[m" >&2
-  nano $LOCAL_ZSH_HISTORY
+  nano $LOCAL_ZSH_ALIASES
   ;;
 *)
   exitError "Invalid command-option"
