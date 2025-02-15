@@ -39,7 +39,7 @@ python3_version=""
 # e.g. 09, 10, 11, 12
 VERSION_PATTERN="^[0-9]{1,2}$"
 
-while getopts ":rpv:" opt; do
+while getopts ":hrpv:" opt; do
   case $opt in
   r)
     dependencies_build="pip"
@@ -205,9 +205,9 @@ source .venv/bin/activate
 pip install --upgrade pip
 logSuccess "Pip" "upgraded"
 
-#Installing Wheel
-pip3 install wheel
-logSuccess "Wheel package" "installed"
+# Install Poetry
+pip3 install poetry
+logSuccess "Poetry package" "installed"
 
 # Install requirements.txt packages
 REQUIREMENTS_FILE="requirements.txt"
@@ -239,9 +239,6 @@ fi
 PYPROJECT_FILE="pyproject.toml"
 
 if [[ "$dependencies_build" == "poetry" ]]; then
-
-  pip3 install poetry
-  logSuccess "Poetry package" "installed"
 
   if ! [[ -f "$PYPROJECT_FILE" ]]; then
     exitError "No $PYPROJECT_FILE file found"
