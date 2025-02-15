@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 PROJECT_NAME
@@ -6,11 +6,11 @@ PROJECT_NAME
 PROJECT_DESCRIPTION
 """
 
-__version__ = "VERSION"
+__version__ = "0.1.0"
 __license__ = "MIT"
 
 __author__ = "mauprogramador"
 __contact__ = "sir.silvabmauricio@gmail.com"
 
 __status__ = "Development"
-__date__ = "MONTH DAY, YEAR"
+__date__ = "CURRENT_DATE"
