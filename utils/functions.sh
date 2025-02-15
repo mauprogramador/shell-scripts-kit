@@ -4,7 +4,7 @@ YESNO="(\033[32my\033[m/\033[31mn\033[m) [\033[32my\033[m]"
 VENV_NAME="\033[m(\033[34;1m.venv\033[m\033[m)"
 
 signalHandler() {
-  trap "echo -e '\033[35;1m!\033[m \033[91mGot an interruption ✘\033[m' >&2; exit 1" SIGINT
+  trap "echo -e '\n\033[35;1m!\033[m \033[91mGot an interruption ✘\033[m' >&2; exit 1" SIGINT
 }
 
 logError() {
@@ -57,6 +57,11 @@ handleHelp() {
     \?)
       logError "Invalid option \033[93m-$OPTARG\033[91m" >&2
       echo -e "\033[mTry passing \033[33m--help\033[m for further information.\033[m" >&2
+      exit 1
+      ;;
+    :)
+      logError "Option \033[93m-$OPTARG\033[91m requires an argument"
+      echoHelp
       exit 1
       ;;
     esac
