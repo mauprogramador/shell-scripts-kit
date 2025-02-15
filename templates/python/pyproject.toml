@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "PROJECT_NAME"
-version = "VERSION"
+version = "0.1.0"
 description = "PROJECT_DESCRIPTION"
 authors = ["mauprogramador <sir.silvabmauricio@gmail.com>"]
 license = "MIT"
