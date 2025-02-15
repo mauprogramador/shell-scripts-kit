@@ -12,21 +12,27 @@ checkForGitRepo
 readonly HELP_MANUAL="
 Usage: release [OPTION]
 
-Generates the Git release notes from the previous tag or changes to the current or latest tag, with the latest updates sorted by conventional commits.
-
+Generates the Git release notes from the previous tag or changes to the current or latest tag.
+The latest updates are grouped and sorted by conventional commits.
 It uses the Cat command by default if no option is provided.
 
 Options for the temporary file and its contents:
-
-  gedit          Open with Gedit editor. https://gedit-text-editor.org/
-  cat            Read with Cat command. https://www.gnu.org/software/coreutils/cat
-  vim            Open with Vim editor. https://www.vim.org/
-  nano           Open with Nano editor. https://www.nano-editor.org
-  xclip          Copy with XClip command. https://github.com/astrand/xclip
+  gedit          Open with Gedit editor.
+  cat            Read with Cat command.
+  vim            Open with Vim editor.
+  nano           Open with Nano editor.
+  xclip          Copy with XClip command.
   -h, --help     Display this help and exit.
 
 Example:
   $ release xclip (Copy to clipboard)
+
+Docs:
+  Gedit: https://gedit-text-editor.org/
+  Cat: https://www.gnu.org/software/coreutils/cat
+  Vim: https://www.vim.org/
+  Nano: https://www.nano-editor.org
+  XClip: https://github.com/astrand/xclip
 "
 
 handleHelp "$1"

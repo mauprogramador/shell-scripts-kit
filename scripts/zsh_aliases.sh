@@ -11,20 +11,25 @@ signalHandler
 readonly HELP_MANUAL="
 Usage: zshalias [OPTION]
 
-Edits and updates the ZSH aliases file. It opens the file with an editor and moves its contents to the one in home.
-
+Edits and updates the ZSH aliases file.
+It opens the file with an editor and moves its contents to the one in home.
 It updates the home ZSH aliases file by default if no options are given.
 
 Options for aliases file:
-
-  gedit          Open with Gedit editor. https://gedit-text-editor.org/
-  vim            Open with Vim editor. https://www.vim.org/
-  nano           Open with Nano editor. https://www.nano-editor.org
+  gedit          Open with Gedit editor.
+  vim            Open with Vim editor.
+  nano           Open with Nano editor.
   update         Update home ZSH aliases.
   -h, --help     Display this help and exit.
 
 Example:
   $ zshalias gedit (Open file)
+
+Docs:
+  ZSH: https://github.com/ohmyzsh/ohmyzsh/wiki
+  Gedit: https://gedit-text-editor.org/
+  Vim: https://www.vim.org/
+  Nano: https://www.nano-editor.org
 "
 
 handleHelp "$1"

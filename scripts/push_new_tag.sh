@@ -13,17 +13,21 @@ readonly HELP_MANUAL="
 Usage: ptag [OPTION] [TAG]
 
 Creates a new Git tag to mark a release point for project updates and pushes it to origin.
-Full documentation: https://git-scm.com/book/en/v2/Git-Basics-Tagging
-
 It prompts for a tag interactively by default if no tag argument is provided.
 
 Option and argument:
-
-  tag            New Git tag to be pushed. Format: vx.x.x or vx.x.x-x.
+  tag            New Git tag to be pushed.
   -h, --help     Display this help and exit.
+
+Tag format:
+  vx.x.x         e.g. v0.1.0
+  vx.x.x-x       e.g. v0.1.0-alpha
 
 Example:
   $ ptag v0.1.4 (Create and push)
+
+Docs:
+  Git Tags: https://git-scm.com/book/en/v2/Git-Basics-Tagging
 "
 
 handleHelp "$1"

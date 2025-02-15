@@ -12,21 +12,28 @@ checkForGitRepo
 readonly HELP_MANUAL="
 Usage: changelog [OPTION]
 
-Generates the Git CHANGELOG of all changes in the project, grouped by released tags and last unreleased changes, and with updates sorted by conventional commits.
-
+Generates a Git CHANGELOG file of all changes grouped by released tags.
+It also records the latest unreleased changes.
+Updates are grouped and sorted by conventional commits.
 It writes a CHANGELOG.md file by default if no option is provided.
 
 Options for the CHANGELOG content:
-
-  gedit          Open with Gedit editor. https://gedit-text-editor.org/
-  cat            Read with Cat command. https://www.gnu.org/software/coreutils/cat
-  vim            Open with Vim editor. https://www.vim.org/
-  nano           Open with Nano editor. https://www.nano-editor.org
-  xclip          Copy with XClip command. https://github.com/astrand/xclip
+  gedit          Open with Gedit editor.
+  cat            Read with Cat command.
+  vim            Open with Vim editor.
+  nano           Open with Nano editor.
+  xclip          Copy with XClip command.
   -h, --help     Display this help and exit.
 
 Example:
   $ changelog xclip (Copy to clipboard)
+
+Docs:
+  Gedit: https://gedit-text-editor.org/
+  Cat: https://www.gnu.org/software/coreutils/cat
+  Vim: https://www.vim.org/
+  Nano: https://www.nano-editor.org
+  XClip: https://github.com/astrand/xclip
 "
 
 handleHelp "$1"

@@ -13,17 +13,21 @@ readonly HELP_MANUAL="
 Usage: dtag [OPTION] [TAG]
 
 Deletes a Git tag locally and remotely (pushes the delete to origin).
-Full documentation: https://git-scm.com/book/en/v2/Git-Basics-Tagging
-
 It prompts for a tag interactively by default if no tag argument is provided.
 
 Option and argument:
-
-  tag            Git tag to be deleted. Format: vx.x.x or vx.x.x-x.
+  tag            Git tag to be deleted.
   -h, --help     Display this help and exit.
+
+Tag format:
+  vx.x.x         e.g. v0.1.0
+  vx.x.x-x       e.g. v0.1.0-alpha
 
 Example:
   $ dtag v0.1.4 (Delete)
+
+Docs:
+  Git Tags: https://git-scm.com/book/en/v2/Git-Basics-Tagging
 "
 
 handleHelp "$1"

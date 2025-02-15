@@ -11,12 +11,16 @@ signalHandler
 readonly HELP_MANUAL="
 Usage: fzshist [OPTION]
 
-Fixes a corrupted ZSH history file. It creates a backup of the corrupted one, moves its contents back into the history, creating a new one, and reads and loads this fixed history. Finally removing the backup.
-Source: https://shapeshed.com/zsh-corrupt-history-file/
+Fixes a corrupted ZSH history file.
+It creates a backup of the corrupted one and moves its contents back.
+It reads and loads this newly created fixed history.
+Finally, it removes the backup.
 
 Option:
-
   -h, --help     Display this help and exit.
+
+Docs:
+  Source: https://shapeshed.com/zsh-corrupt-history-file/
 "
 
 handleHelp "$1"

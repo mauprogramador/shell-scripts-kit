@@ -11,20 +11,29 @@ signalHandler
 readonly HELP_MANUAL="
 Usage: venv [OPTION]
 
-Creates a new Python Venv (.venv) using the Venv module to install and use packages and libraries. It will use the Python3 version found and can install dependencies using Pip and Poetry.
-Full documentation: https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/
-
+Creates a new Python Venv (.venv) using the Venv module to install and use packages and libraries.
+It will use the Python3 version found and can install dependencies using Pip and Poetry.
+It updates Pip and installs the Poetry package by default.
 It only creates the Venv (no package installation) by default if no option is provided.
 
 Options for Venv packages:
-
-  -r             Create Venv and install dependencies with Pip from requirements.txt (pip3 install -r requirements.txt). https://pip.pypa.io/en/latest/user_guide/#requirements-files
-  -p             Create Venv and install dependencies with Poetry from pyproject.toml and poetry.lock (poetry install --no-root). https://python-poetry.org/docs/cli/#install
-  -v             Python3 version to use in Venv. https://www.python.org/doc/versions/
+  -r             Create Venv and install dependencies with Pip from requirements.txt.
+  -p             Create Venv and install dependencies with Poetry from pyproject.toml and poetry.lock.
+  -v             Python3 version to use in Venv.
   -h, --help     Display this help and exit.
+
+Commands used when installing dependencies:
+  Pip            pip3 install -r requirements.txt
+  Poetry         poetry install --no-root
 
 Example:
   $ venv -v 11 (Create a Venv with no package for Python3.11)
+
+Docs:
+  Venv: https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/
+  Requirements: https://pip.pypa.io/en/latest/user_guide/#requirements-files
+  Poetry: https://python-poetry.org/docs/
+  Versions: https://www.python.org/doc/versions/
 "
 
 if [[ "$1" == "--help" ]]; then
