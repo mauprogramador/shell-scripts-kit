@@ -93,8 +93,7 @@ for venv_dir in "${VENV_DIRECTORIES[@]}"; do
     default_answer="y"
 
     echo -ne "Would you like to replace it with a new one? $YESNO: "
-    read -re ANSWER
-    echo -e "" >&2
+    read ANSWER
 
     if [[ -z "$ANSWER" ]]; then
       ANSWER="$default_answer"
