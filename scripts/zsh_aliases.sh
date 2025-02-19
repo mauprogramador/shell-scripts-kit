@@ -36,7 +36,7 @@ handleHelp "$1"
 
 # Set file names
 ZSH_ALIASES=".zsh_aliases"
-LOCAL_ZSH_ALIASES="config/.zsh_aliases"
+LOCAL_ZSH_ALIASES="$(dirname "$0")/../config/.zsh_aliases"
 HOME_ZSH_ALIASES="$HOME/.zsh_aliases"
 
 # Check if allowed command option
@@ -57,7 +57,8 @@ fi
 # Execute command
 case $chosen_command in
 "update")
-  echo -e "KIT_PATH=$(pwd)\n" >$HOME_ZSH_ALIASES
+  dir_path="$(dirname $(dirname $(realpath "$0")))"
+  echo -e "KIT_PATH=$dir_path\n" >$HOME_ZSH_ALIASES
   cat "$LOCAL_ZSH_ALIASES" >>$HOME_ZSH_ALIASES
   logSuccess "ZSH aliases" "updated"
   echo -e "Run \033[93msource ~/.zsh_aliase\033[m to load aliases"
