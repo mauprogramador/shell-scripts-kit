@@ -1,12 +1,23 @@
+# Docker
 alias drma="docker rm -f $(docker ps -a -q)"
 alias dlsa="docker ps --format 'table {{.ID}}\t{{.Image}}\t{{.Names}}'"
+
+# PHP Laravel
 alias sailup="./vendor/bin/sail up -d --build"
+
+# Python
 alias av="source .venv/bin/activate"
 alias dv="deactivate"
 alias reqs="pip3 freeze > requirements.txt"
+
+# Config
 alias zshrc="gedit ~/.zshrc"
 alias spaceshiprc="gedit ~/.spaceshiprc.zsh"
+
+# TLauncher Minecraft
 alias mine="java -jar ~/Games/TLauncher.v10/TLauncher.jar && exit"
+
+# Scripts
 alias zshalias="bash $KIT_PATH/scripts/zsh_aliases.sh"
 alias changelog="bash $KIT_PATH/scripts/generate_changelogs.sh"
 alias venv="bash $KIT_PATH/scripts/generate_venv.sh"
@@ -14,6 +25,20 @@ alias setup="bash $KIT_PATH/scripts/setup.sh"
 alias release="bash $KIT_PATH/scripts/generate_releases.sh"
 alias ptag="bash $KIT_PATH/scripts/push_new_tag.sh"
 alias pysetup="bash $KIT_PATH/scripts/python_setup.sh"
-alias gitignore="cp $KIT_PATH/templates/.gitignore .gitignore"
-alias precommit="cp $KIT_PATH/templates/pre-commit .git/hooks/pre-commit"
+alias rport="bash $KIT_PATH/scripts/running_ports.sh"
+alias adserv="sudo bash $KIT_PATH/scripts/add_new_service.sh"
+
+# Clipboard
 alias cb="xclip -selection clipboard"
+
+# Systemctl
+alias sctlenable="sudo systemctl enable"
+alias sctldisable="sudo systemctl disable"
+alias sctlstart="sudo systemctl start"
+alias sctlstop="sudo systemctl stop"
+alias sctlreload="sudo systemctl daemon-reload"
+alias sctlrestart="sudo systemctl restart"
+alias sctlstatus="sudo systemctl status"
+
+# Go to Systemd services files
+alias gtsystem="cd /etc/systemd/system"
