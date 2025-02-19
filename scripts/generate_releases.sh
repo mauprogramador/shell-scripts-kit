@@ -37,11 +37,14 @@ Docs:
 
 handleHelp "$1"
 
+# e.g. cat, gedit
+COMMANDS_PATTERN="^(cat|gedit|vim|nano|xclip)$"
+
 # Check if allowed command option
 if [ -z "$1" ]; then
   chosen_command="cat"
 else
-  if echo "$1" | grep -Eq '^(cat|gedit|vim|nano|xclip)$'; then
+  if echo "$1" | grep -Eq $COMMANDS_PATTERN; then
     chosen_command="$1"
   else
     invalidOption

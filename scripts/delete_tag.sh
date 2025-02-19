@@ -33,7 +33,7 @@ Docs:
 handleHelp "$1"
 
 # e.g. 0.1.12, 0.2.106-alpha
-TAG_REGEX_PATTERN="v[0-9]+\.[0-9]+\.[0-9]+[\-\w-]*"
+TAG_REGEX_PATTERN="^v[0-9]+\.[0-9]+\.[0-9]+[a-zA-Z0-9\_\-]*$"
 
 # Check passed tag
 tag=""
