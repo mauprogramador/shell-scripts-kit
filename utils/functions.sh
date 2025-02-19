@@ -1,10 +1,18 @@
 #!/bin/bash
 
+# e.g. /home to \/home
+ESCAPE_PATH_PATTERN="s/\//\\\\\\//g"
+
 YESNO="(\033[32my\033[m/\033[31mn\033[m) [\033[32my\033[m]"
 VENV_NAME="\033[m(\033[34;1m.venv\033[m\033[m)"
 
 signalHandler() {
   trap "echo -e '\n\033[35;1m!\033[m \033[91mGot an interruption ✘\033[m' >&2; exit 1" SIGINT
+}
+
+escapePath() {
+  local path="$1"
+  echo "$(echo "$path" | sed $ESCAPE_PATH_PATTERN)"
 }
 
 logError() {
@@ -22,6 +30,15 @@ exitError() {
   local message="$1"
   logError "$message"
   exit 1
+}
+
+checkCommandExit() {
+  local exit_code=$?
+  local message="$1"
+
+  if [[ "$exit_code" -ne 0 ]]; then
+    exitError "$message"
+  fi
 }
 
 echoHelp() {
