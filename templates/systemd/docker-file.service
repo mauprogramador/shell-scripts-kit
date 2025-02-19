@@ -1,0 +1,31 @@
+[Unit]
+Description=DESCRIPTION
+# Documentation=DOCUMENTATION
+Requires=docker.service
+After=docker.service
+# PartOf=GROUP
+
+[Service]
+Type=oneshot
+User=USER
+TimeoutStartSec=0
+RemainAfterExit=yes
+WorkingDirectory=PROJECT_DIR
+ExecStartPre=/usr/bin/docker pull IMAGE:TAG
+# -- Optional:
+# ExecStartPre=/usr/bin/docker build -t CONTAINER_NAME PROJECT_DIR
+# ExecStartPre=/bin/bash -c "cd PROJECT_DIR && docker build -t CONTAINER_NAME PROJECT_DIR"
+ExecStart=/usr/bin/docker run --env VARIABLE=VALUE --env-file .env --name CONTAINER_NAME -p PORT:PORT -v PATH:PATH IMAGE:TAG
+# -- Optional:
+# ExecStart=/bin/bash -c "cd PROJECT_DIR && docker run ..."
+ExecStop=/usr/bin/docker stop CONTAINER_NAME
+ExecReload=/usr/bin/docker restart CONTAINER_NAME
+# -- Set Environment:
+# Environment=VARIABLE=VALUE
+# EnvironmentFile=PROJECT_DIR/.env
+Restart=always
+StandardOutput=file:SYSTEMDIR/records.log
+StandardError=file:SYSTEMDIR/errors.log
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,27 @@
+[Unit]
+Description=DESCRIPTION
+# Documentation=DOCUMENTATION
+Requires=docker.service
+After=docker.service
+# PartOf=GROUP
+
+[Service]
+Type=oneshot
+User=USER
+TimeoutStartSec=0
+RemainAfterExit=yes
+WorkingDirectory=PROJECT_DIR
+ExecStart=/usr/bin/compose --env-file .env -f PROJECT_DIR up
+ExecStart=/usr/bin/compose --env-file .env -f PROJECT_DIR down
+# -- Optional:
+# ExecStart=/bin/bash -c "cd PROJECT_DIR && docker compose --env-file .env -f PROJECT_DIR up"
+# ExecStop=/bin/bash -c "cd PROJECT_DIR && docker compose --env-file .env -f PROJECT_DIR down"
+# -- Set Environment:
+# Environment=VARIABLE=VALUE
+# EnvironmentFile=PROJECT_DIR/.env
+Restart=always
+StandardOutput=file:SYSTEMDIR/records.log
+StandardError=file:SYSTEMDIR/errors.log
+
+[Install]
+WantedBy=multi-user.target

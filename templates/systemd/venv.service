@@ -1,0 +1,24 @@
+[Unit]
+Description=DESCRIPTION
+# Documentation=DOCUMENTATION
+After=network.target
+# PartOf=GROUP
+
+[Service]
+Type=simple
+User=USER
+WorkingDirectory=PROJECT_DIR
+ExecStart=PROJECT_DIR/.venv/bin/python -m main.py
+# -- Optional:
+# ExecStart=/bin/bash -c "cd PROJECT_DIR && source .venv/bin/activate && python3 -m main.py"
+# ExecStart=/bin/bash -c "cd PROJECT_DIR && source .venv/bin/activate && poetry run python3 -m main.py"
+# ExecStart=/bin/bash -c "cd PROJECT_DIR && source .venv/bin/activate && make run"
+# -- Set Environment:
+# Environment=VARIABLE=VALUE
+# EnvironmentFile=PROJECT_DIR/.env
+Restart=always
+StandardOutput=file:SYSTEMDIR/records.log
+StandardError=file:SYSTEMDIR/errors.log
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,22 @@
+[Unit]
+Description=DESCRIPTION
+# Documentation=DOCUMENTATION
+After=network.target
+# PartOf=GROUP
+
+[Service]
+Type=simple
+User=USER
+WorkingDirectory=PROJECT_DIR
+ExecStart=PROJECT_DIR/...
+# -- Optional:
+# ExecStart=/bin/bash -c "cd PROJECT_DIR && ..."
+# -- Set Environment:
+# Environment=VARIABLE=VALUE
+# EnvironmentFile=PROJECT_DIR/.env
+Restart=always
+StandardOutput=file:SYSTEMDIR/records.log
+StandardError=file:SYSTEMDIR/errors.log
+
+[Install]
+WantedBy=multi-user.target
