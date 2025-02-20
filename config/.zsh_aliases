@@ -27,6 +27,7 @@ alias ptag="bash $KIT_PATH/scripts/push_new_tag.sh"
 alias pysetup="bash $KIT_PATH/scripts/python_setup.sh"
 alias rport="bash $KIT_PATH/scripts/running_ports.sh"
 alias adserv="sudo bash $KIT_PATH/scripts/add_new_systemd_service.sh"
+alias rmserv="sudo bash $KIT_PATH/scripts/remove_systemd_service.sh"
 alias adsgp="sudo bash $KIT_PATH/scripts/add_new_group_target.sh"
 
 # Clipboard
